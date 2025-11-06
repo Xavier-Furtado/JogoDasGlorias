@@ -1,0 +1,80 @@
+//max 30
+//5 das 30 sao especiais(perdem a vez de jogar)
+//retorna 3 casas
+//avança 3 casas
+//joga novamente
+//espera pela passagem do outro jogador
+
+                              //jogo da maldita gloria inacabado
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <cstdio>
+
+using namespace std;
+
+struct Gloria {
+    char jogada;
+};
+
+struct Jogadores {
+    string nome;
+    string simbolo;
+    int valorDado;
+};
+
+void pedeNome(Jogadores &p1, Jogadores &p2) {
+    cout << "Qual o seu nome jogador 1: ";
+    cin >> p1.nome;
+
+    cout << "Qual o seu nome jogador 2: ";
+    cin >> p2.nome;
+}
+
+const int NUM_CASAS = 30;
+const int casasEspeciais[] = {3, 8, 13,22, 29};
+const int NUM_ESPECIAIS = 5;
+
+void desenhar_tabuleiro_simples() {
+    for (int i = 1; i <= NUM_CASAS; ++i) {
+        bool Especial = false;
+
+        for (int j = 0; j < NUM_ESPECIAIS; ++j) {
+            if (i == casasEspeciais[j]) {
+                Especial = true;
+                break;
+            }
+        }
+
+        if (Especial) {
+            printf("|*%2d*|", i); 
+        } else {
+            printf("|.%2d.|", i);
+        }
+        
+
+        if (i % 10 == 0) {
+            printf("\n");
+        } else {
+            printf(" - ");
+        }
+    }
+}
+
+int main(){
+    srand(time(NULL));
+
+    desenhar_tabuleiro_simples();
+    cout << endl; 
+
+    Jogadores p1, p2;
+    pedeNome(p1, p2);
+
+    p1.valorDado = (rand() % 6) + 1; 
+    p2.valorDado = (rand() % 6) + 1;
+
+    cout << p1.nome << " tirou: " << p1.valorDado << endl;
+    cout << p2.nome << " tirou: " << p2.valorDado << endl;
+ 
+    return 0;
+}
