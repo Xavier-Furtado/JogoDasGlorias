@@ -1,9 +1,18 @@
-//max 30
-//5 das 30 sao especiais(perdem a vez de jogar)
-//retorna 3 casas
-//avança 3 casas
-//joga novamente
-//espera pela passagem do outro jogador
+*/Instruções
+Elabora um jogo, semelhante ao jogo da glória com as seguintes regras:
+
+30 casa
+5 casas especiais
+Perde a vez de jogar: O jogador deixa de poder jogar na próxima vez
+Retorna 3 casa: O jogador recua 3 casas no tabuleiro
+Avança 3 casas: O jogador avança 3 casas no tabuleiro
+Joga novamente: O Jogador tem o direito de jogar novamente
+Espera pela passagem dos outros jogadores: O jogador só pode voltar a jogar quando todos os outros o ultrapassarem.
+O tabuleiro deve ser mostrado e atualizado em cada jogada
+O "rolar" dos dados deve ser feito de forma aleatória
+Devemos conseguir identificar no tabuleiro: Os jogadores e as casas especiais
+Todas as casas são numeradas de 1 a 30
+/*
 
                               //jogo da maldita gloria inacabado
 #include <iostream>
