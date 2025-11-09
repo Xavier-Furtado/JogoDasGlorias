@@ -1,0 +1,150 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <cstdio>
+
+using namespace std;
+
+const int NUM_CASAS = 30;
+const int casasEspeciais[] = {3, 8, 13, 22, 29};
+const int NUM_ESPECIAIS = 5;
+
+struct Jogador {
+    char nome[20];
+    char simbolo;
+    int posicao;
+    bool perdeVez;
+    bool esperaUltrapassagem;
+};
+
+void desenharTabuleiro(const Jogador &p1, const Jogador &p2) {
+    cout << "\n=== TABULEIRO ===\n";
+    for (int i = 1; i <= NUM_CASAS; ++i) {
+        bool especial = false;
+        for (int j = 0; j < NUM_ESPECIAIS; ++j)
+            if (i == casasEspeciais[j]) especial = true;
+
+        // Mostrar jogadores na casa
+        if (p1.posicao == i && p2.posicao == i)
+            printf("|P1&P2|");
+        else if (p1.posicao == i)
+            printf("| %c  |", p1.simbolo);
+        else if (p2.posicao == i)
+            printf("| %c  |", p2.simbolo);
+        else if (especial)
+            printf("|*%2d*|", i);
+        else
+            printf("| %2d |", i);
+
+        if (i % 10 == 0) printf("\n");
+    }
+    cout << endl;
+}
+
+int rolarDado() {
+    return rand() % 6 + 1;
+}
+
+void aplicarEfeito(Jogador &jog, int casa, bool &jogaNovamente) {
+    jogaNovamente = false;
+
+    switch (casa) {
+        case 3:
+            printf("%s caiu numa casa que PERDE A VEZ!\n", jog.nome);
+            jog.perdeVez = true;
+            break;
+        case 8:
+            printf("%s caiu numa casa que RETORNA 3 CASAS!\n", jog.nome);
+            jog.posicao -= 3;
+            if (jog.posicao < 1) jog.posicao = 1;
+            break;
+        case 13:
+            printf("%s caiu numa casa que AVANÇA 3 CASAS!\n", jog.nome);
+            jog.posicao += 3;
+            if (jog.posicao > NUM_CASAS) jog.posicao = NUM_CASAS;
+            break;
+        case 22:
+            printf("%s caiu numa casa que JOGA NOVAMENTE!\n", jog.nome);
+            jogaNovamente = true;
+            break;
+        case 29:
+            printf("%s deve ESPERAR SER ULTRAPASSADO!\n", jog.nome);
+            jog.esperaUltrapassagem = true;
+            break;
+        default:
+            break;
+    }
+}
+
+bool verificarUltrapassagem(Jogador &espera, const Jogador &outro) {
+    if (espera.esperaUltrapassagem && outro.posicao > espera.posicao) {
+        printf("%s foi ultrapassado e pode voltar a jogar!\n", espera.nome);
+        espera.esperaUltrapassagem = false;
+        return true;
+    }
+    return false;
+}
+
+int main() {
+    srand(time(NULL));
+
+    Jogador p1, p2;
+    cout << "Nome do Jogador 1: ";
+    cin >> p1.nome;
+    p1.simbolo = 'A';
+    p1.posicao = 1;
+    p1.perdeVez = false;
+    p1.esperaUltrapassagem = false;
+
+    cout << "Nome do Jogador 2: ";
+    cin >> p2.nome;
+    p2.simbolo = 'B';
+    p2.posicao = 1;
+    p2.perdeVez = false;
+    p2.esperaUltrapassagem = false;
+
+    bool fim = false;
+    int turno = 1;
+
+    while (!fim) {
+        desenharTabuleiro(p1, p2);
+
+        Jogador *jogAtual = (turno % 2 == 1) ? &p1 : &p2;
+        Jogador *jogOutro = (turno % 2 == 1) ? &p2 : &p1;
+
+        // Verifica se pode jogar
+        if (jogAtual->perdeVez) {
+            printf("%s perdeu a vez!\n", jogAtual->nome);
+            jogAtual->perdeVez = false;
+        } else if (jogAtual->esperaUltrapassagem) {
+            printf("%s ainda espera ser ultrapassado!\n", jogAtual->nome);
+        } else {
+            bool jogaNovamente = false;
+            cout << "\nÉ a vez de " << jogAtual->nome << ". Prima ENTER para rolar o dado...";
+            cin.ignore();
+            cin.get();
+
+            int dado = rolarDado();
+            printf("%s tirou %d!\n", jogAtual->nome, dado);
+
+            jogAtual->posicao += dado;
+            if (jogAtual->posicao > NUM_CASAS)
+                jogAtual->posicao = NUM_CASAS;
+
+            aplicarEfeito(*jogAtual, jogAtual->posicao, jogaNovamente);
+            verificarUltrapassagem(*jogOutro, *jogAtual);
+            verificarUltrapassagem(*jogAtual, *jogOutro);
+
+            if (jogAtual->posicao >= NUM_CASAS) {
+                printf("\n🎉 %s chegou ao fim e venceu o jogo! 🎉\n", jogAtual->nome);
+                fim = true;
+            }
+
+            if (jogaNovamente) turno--; // repete o turno
+        }
+
+        turno++;
+    }
+
+    return 0;
+}
