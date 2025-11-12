@@ -138,8 +138,6 @@ int main() {
 
             cout << "\nÉ a vez de " << jogAtual->nome << ". Prima ENTER para rolar o dado...";
             
-            cin.clear();
-            cin.sync();
             cin.get();
 
             int dado = rolarDado();
