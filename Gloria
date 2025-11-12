@@ -138,10 +138,9 @@ int main() {
 
             cout << "\nÉ a vez de " << jogAtual->nome << ". Prima ENTER para rolar o dado...";
             
-            // Versão sem <limits>:
             cin.clear();
             cin.sync();
-            cin.get(); // Espera ENTER
+            cin.get();
 
             int dado = rolarDado();
             cout << jogAtual->nome << " tirou " << dado << "!\n";
@@ -162,7 +161,7 @@ int main() {
             }
 
             if (jogaNovamente) {
-                turno--; // repete turno
+                turno--;
             }
         }
 
